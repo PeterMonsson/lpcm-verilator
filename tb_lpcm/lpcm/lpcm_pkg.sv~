@@ -1,0 +1,8 @@
+package lpcm_pkg;
+
+   typedef struct packed {
+      int        latency;
+      int        sample;
+   } lpcm_item;
+
+endpackage

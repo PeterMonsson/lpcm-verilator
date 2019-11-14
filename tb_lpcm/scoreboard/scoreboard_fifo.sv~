@@ -1,0 +1,66 @@
+module scoreboard_fifo
+  #(parameter ENTRIES = 100,
+    parameter BITS = -1)
+   (input logic             clk,
+    input logic 	    rst_n,
+    input logic 	    enq,
+    input logic [BITS-1:0]  wdata,
+    input logic 	    deq,
+    output logic [BITS-1:0] rdata,
+    output logic 	    full,
+    output logic 	    empty
+    );
+
+   logic [$clog2(ENTRIES)-1:0] fill;
+   
+   logic [ENTRIES-1:0] 	         valid;
+   logic [ENTRIES-1:0][BITS-1:0] data;
+   
+   /* verilator lint_off WIDTH */
+
+   always_ff @(posedge clk or negedge rst_n) begin
+      if (!rst_n) begin
+	 valid <= '0;
+	 data  <= '0;
+	 fill <= '0;
+      end else begin
+	 if (full && enq && !deq) begin
+	    $error("FIFO overflow");
+	 end
+	 if (empty && !enq && deq) begin
+	    $error("FIFO underflow");
+	 end
+	 fill <= fill + enq - deq;
+	 for (int i = 0; i < ENTRIES-1; i++) begin
+	    if (enq && fill == i+deq) begin
+	       valid[i] <= '1;
+	       data[i] <= rdata;
+	    end else begin
+	       if (deq) begin
+		  valid[i] <= valid[i+1];
+		  data[i] <= data[i+1];
+	       end
+	    end
+	 end
+	 if (enq && fill == ENTRIES-1+deq) begin
+	    valid[ENTRIES-1] <= '1;
+	    data[ENTRIES-1] <= rdata;
+	 end else begin
+	    if (deq) begin
+	       valid[ENTRIES-1] <= '0;
+	       data[ENTRIES-1] <= '0;
+	    end
+	 end
+      end
+   end
+   /* verilator lint_on WIDTH */
+   
+   always_comb begin
+      full = valid[ENTRIES-1];
+      empty = !valid[0];
+      rdata = data[0];
+   end
+
+   // TODO: Assertions
+
+endmodule

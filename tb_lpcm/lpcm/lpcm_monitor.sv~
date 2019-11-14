@@ -1,0 +1,3 @@
+module lpcm_driver(lpcm_if vif);
+
+endmodule // lpcm_driver

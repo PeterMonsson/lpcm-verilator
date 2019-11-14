@@ -1,0 +1,14 @@
+module lpcm_agent
+  #(parameter bit IS_ACTIVE = 0)
+   (lpcm_if vif,
+    output logic en);
+
+   generate if (IS_ACTIVE = 1) begin
+
+      lpcm_driver lpcm_master (.vif(vif));
+   end endgenerate
+
+   lpcm_monitor lpcm_monitor (.vif(pcm_mst_if),
+			      .en(en));
+   
+endmodule

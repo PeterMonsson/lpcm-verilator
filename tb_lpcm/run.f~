@@ -1,0 +1,2 @@
+      -Wall --assert --trace -Os -cc  top.sv ../dut.v lpcm/*.sv --exe sim_main.cpp
+      

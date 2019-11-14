@@ -1,0 +1,7 @@
+module lpcm_sequencer (output logic req_en,
+		       output 	    lpcm_pkg::lpcm_item req,
+		       input 	    lpcm_pkg::lpcm_item rsp,
+		       input logic rsp_en);
+);
+
+endmodule

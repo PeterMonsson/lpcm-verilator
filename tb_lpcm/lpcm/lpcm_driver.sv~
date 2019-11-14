@@ -1,0 +1,5 @@
+module lpcm_driver(lpcm_if intf);
+
+endmodule // lpcm_driver
+
+		   
